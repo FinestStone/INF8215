@@ -27,7 +27,32 @@ class Rushhour:
     def possible_moves(self, state):
         self.init_positions(state)
         new_states = []
-        # TODO
+
+        # Recherche des véhicules qui peuvent se déplacer
+        for i in range(self.nbcars):
+            new_state = state
+
+            # Cas où la voiture est à l'horizontale
+            if self.horiz[i]:
+                if state.pos[i] + self.length[i] <= 5 and \
+                        self.free_pos[self.move_on[i], state.pos[i] + self.length[i]]:  # Case libre en face
+                    new_state.move(i, 1)
+                    new_states.append(new_state)
+                if state.pos[i] - 1 >= 0 and self.free_pos[self.move_on[i], state.pos[i] - 1]:  # Case libre derrière
+                    new_state.move(i, -1)
+                    new_states.append(new_state)
+
+            # Cas où la voiture est à la verticale
+            else:
+                if state.pos[i] + self.length[i] <= 5 and \
+                        self.free_pos[state.pos[i] + self.length[i], self.move_on[i]]:  # Case libre en face
+                    new_state.move(i, 1)
+                    new_states.append(new_state)
+                if state.pos[i] - 1 >= 0 and self.free_pos[state.pos[i] - 1, self.move_on[i]]:  # Case libre derrière
+                    new_state.move(i, -1)
+                    new_states.append(new_state)
+
+        # Renvoie l'ensemble d'états qui peuvent être atteints à partir de l'état state
         return new_states
 
     def solve(self, state):
@@ -70,4 +95,15 @@ def test2():
     # print("\n", "résultat correct" if b else "mauvais résultat")
 
 
+def test3():
+    rh = Rushhour([True, False, True, False, False, True, False, True, False, True, False, True],
+                 [2, 2, 3, 2, 3, 2, 2, 2, 2, 2, 2, 3],
+                 [2, 2, 0, 0, 3, 1, 1, 3, 0, 4, 5, 5])
+    s = State([1, 0, 3, 1, 1, 4, 3, 4, 4, 2, 4, 1])
+    s2 = State([1, 0, 3, 1, 1, 4, 3, 4, 4, 2, 4, 2])
+    print(len(rh.possible_moves(s)))
+    print(len(rh.possible_moves(s2)))
+
+
 test2()
+test3()
