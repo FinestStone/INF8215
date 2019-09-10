@@ -19,8 +19,10 @@ class Rushhour:
 
         # Initialise la matrice en fonction de l'état donné
         for i in range(self.nbcars):
-            print(i)
-            # TODO
+            if self.horiz[i]:  # Cas où la voiture est à l'horizontale
+                self.free_pos[self.move_on[i], state.pos[i]:state.pos[i] + self.length[i]] = False
+            else:  # Cas où la voiture est à la verticale
+                self.free_pos[state.pos[i]:state.pos[i] + self.length[i], self.move_on[i]] = False
 
     def possible_moves(self, state):
         self.init_positions(state)
