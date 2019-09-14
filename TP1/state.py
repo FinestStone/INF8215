@@ -108,6 +108,3 @@ def test1():
     print(s.success())
     b = b and s.success()
     print("\n", "résultat correct" if b else "mauvais résultat")
-
-
-test1()

@@ -60,6 +60,12 @@ class Rushhour:
         fifo = deque([state])
         visited.add(state)
         # TODO
+        # Recherche en largeur sur l'arbre
+        # File par représentée par une liste (FIFO) initialisée avec l'état initial
+        # Tant que la liste n'est pas vide, on extrait le premier état
+        # Si l'état est final, on termine l'algorithme
+        # On ajoute ses fils non visités à la fin de la liste
+        # On ajoute cet état dans la liste visited
 
         return None
 
@@ -105,5 +111,12 @@ def test3():
     print(len(rh.possible_moves(s2)))
 
 
-test2()
-test3()
+def solve46():
+    rh = Rushhour([True, False, True, False, False, True, False, True, False, True, False, True],
+                 [2, 2, 3, 2, 3, 2, 2, 2, 2, 2, 2, 3],
+                 [2, 2, 0, 0, 3, 1, 1, 3, 0, 4, 5, 5],
+                 ["rouge", "vert clair", "jaune", "orange", "violet clair", "bleu ciel", "rose", "violet", "vert", "noir", "beige", "bleu"])
+    s = State([1, 0, 3, 1, 1, 4, 3, 4, 4, 2, 4, 1])
+    s = rh.solve(s)
+    #s = rh.solve_Astar(s)
+    rh.print_solution(s)
