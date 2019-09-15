@@ -93,5 +93,35 @@ class Rushhour:
         return None
 
     def print_solution(self, state):
-        # TODO
+        solution_path = []
+
+        # List all states that lead to the solution
+        while state.prev:
+            solution_path.append(state)
+            state = state.prev
+
+        # Put the list in the right order
+        solution_path.reverse()
+
+        # Print all the solution elements in order
+        i = 1
+        for solution_element in solution_path:
+            # Color of the car that needs to be moves
+            color = self.color[solution_element.c]
+
+            # Direction of the moving car
+            if self.horiz[solution_element.c]:
+                if solution_element.d == 1:
+                    direction = "la droite"
+                else:
+                    direction = "la gauche"
+            else:
+                if solution_element.d == 1:
+                    direction = "le bas"
+                else:
+                    direction = "le haut"
+
+            print("%s. Voiture %s vers %s" % (i, color, direction))
+            i += 1
+
         return 0
