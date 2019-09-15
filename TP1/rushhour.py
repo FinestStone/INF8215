@@ -29,44 +29,56 @@ class Rushhour:
         new_states = []
 
         # Recherche des véhicules qui peuvent se déplacer
-        for i in range(self.nbcars):
-            new_state = state
+        for c in range(self.nbcars):
+            rear = state.pos[c] - 1  # Square behind the car
+            if rear >= 0:
+                # Case of a horizontal car
+                if self.horiz[c]:
+                    # Checking for empty space behind the car
+                    if self.free_pos[self.move_on[c], rear]:
+                        new_states.append(state.move(c, -1))  # Add the posible state
+                # Case of a vertical car
+                else:
+                    # Checking for empty space behind the car
+                    if self.free_pos[rear, self.move_on[c]]:
+                        new_states.append(state.move(c, -1))  # Add the posible state
 
-            # Cas où la voiture est à l'horizontale
-            if self.horiz[i]:
-                if state.pos[i] + self.length[i] <= 5 and \
-                        self.free_pos[self.move_on[i], state.pos[i] + self.length[i]]:  # Case libre en face
-                    new_state.move(i, 1)
-                    new_states.append(new_state)
-                if state.pos[i] - 1 >= 0 and self.free_pos[self.move_on[i], state.pos[i] - 1]:  # Case libre derrière
-                    new_state.move(i, -1)
-                    new_states.append(new_state)
-
-            # Cas où la voiture est à la verticale
-            else:
-                if state.pos[i] + self.length[i] <= 5 and \
-                        self.free_pos[state.pos[i] + self.length[i], self.move_on[i]]:  # Case libre en face
-                    new_state.move(i, 1)
-                    new_states.append(new_state)
-                if state.pos[i] - 1 >= 0 and self.free_pos[state.pos[i] - 1, self.move_on[i]]:  # Case libre derrière
-                    new_state.move(i, -1)
-                    new_states.append(new_state)
-
-        # Renvoie l'ensemble d'états qui peuvent être atteints à partir de l'état state
+            front = state.pos[c] + self.length[c]  # Square infront of the car
+            if front <= 5:
+                # Case of a horizontal car
+                if self.horiz[c]:
+                    # Checking for empty space infront of the car
+                    if self.free_pos[self.move_on[c], front]:
+                        new_states.append(state.move(c, 1))  # Add the posible state
+                # Case of a vertical car
+                else:
+                    # Checking for empty space infront of the car
+                    if self.free_pos[front, self.move_on[c]]:
+                        new_states.append(state.move(c, 1))  # Add the posible state
         return new_states
 
     def solve(self, state):
+        # Ensemble hash pour mémoriser les états déjà trouvés
         visited = set()
+        # File représentée par une liste (FIFO) initialisée avec l'état initial
         fifo = deque([state])
         visited.add(state)
-        # TODO
-        # Recherche en largeur sur l'arbre
-        # File par représentée par une liste (FIFO) initialisée avec l'état initial
-        # Tant que la liste n'est pas vide, on extrait le premier état
-        # Si l'état est final, on termine l'algorithme
-        # On ajoute ses fils non visités à la fin de la liste
-        # On ajoute cet état dans la liste visited
 
+        # Recherche en largeur sur l'arbre, tant que la liste n'est pas vide
+        while fifo:
+            # Extrait le premier état
+            p = fifo.popleft()
+
+            # Si l'état est final, on termine l'algorithme
+            if p.success():
+                return p
+            # Sinon, on ajoute ses fils non visités à la fin de la liste
+            else:
+                s = self.possible_moves(p)
+                for child in s:
+                    if child not in visited:
+                        fifo.append(child)
+                        visited.add(child)
         return None
 
     def solve_Astar(self, state):
@@ -83,40 +95,3 @@ class Rushhour:
     def print_solution(self, state):
         # TODO
         return 0
-
-
-def test2():
-    rh = Rushhour([True, True, False, False, True, True, False, False],
-                  [2, 2, 3, 2, 3, 2, 3, 3],
-                  [2, 0, 0, 0, 5, 4, 5, 3])
-    s = State([1, 0, 1, 4, 2, 4, 0, 1])
-    rh.init_positions(s)
-    b = True
-    print(rh.free_pos)
-    ans = [[False, False, True, True, True, False], [False, True, True, False, True, False],
-           [False, False, False, False, True, False],
-           [False, True, True, False, True, True], [False, True, True, True, False, False],
-           [False, True, False, False, False, True]]
-    b = b and (rh.free_pos[i, j] == ans[i, j] for i in range(6) for j in range(6))
-    # print("\n", "résultat correct" if b else "mauvais résultat")
-
-
-def test3():
-    rh = Rushhour([True, False, True, False, False, True, False, True, False, True, False, True],
-                 [2, 2, 3, 2, 3, 2, 2, 2, 2, 2, 2, 3],
-                 [2, 2, 0, 0, 3, 1, 1, 3, 0, 4, 5, 5])
-    s = State([1, 0, 3, 1, 1, 4, 3, 4, 4, 2, 4, 1])
-    s2 = State([1, 0, 3, 1, 1, 4, 3, 4, 4, 2, 4, 2])
-    print(len(rh.possible_moves(s)))
-    print(len(rh.possible_moves(s2)))
-
-
-def solve46():
-    rh = Rushhour([True, False, True, False, False, True, False, True, False, True, False, True],
-                 [2, 2, 3, 2, 3, 2, 2, 2, 2, 2, 2, 3],
-                 [2, 2, 0, 0, 3, 1, 1, 3, 0, 4, 5, 5],
-                 ["rouge", "vert clair", "jaune", "orange", "violet clair", "bleu ciel", "rose", "violet", "vert", "noir", "beige", "bleu"])
-    s = State([1, 0, 3, 1, 1, 4, 3, 4, 4, 2, 4, 1])
-    s = rh.solve(s)
-    #s = rh.solve_Astar(s)
-    rh.print_solution(s)
