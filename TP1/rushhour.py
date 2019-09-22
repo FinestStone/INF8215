@@ -64,13 +64,19 @@ class Rushhour:
         fifo = deque([state])
         visited.add(state)
 
+        # Variable pour compter le nombre d'états visités lors de la résolution
+        nb_visited = 0
+
         # Recherche en largeur sur l'arbre, tant que la liste n'est pas vide
         while fifo:
             # Extrait le premier état
             p = fifo.popleft()
+            nb_visited += 1
 
             # Si l'état est final, on termine l'algorithme
             if p.success():
+                # Afficher le nombre d'états visités lors de la résolution
+                print("Nombre d'états visités lors de la résolution : %i" % nb_visited)
                 return p
             # Sinon, on ajoute ses fils non visités à la fin de la liste
             else:
@@ -82,14 +88,37 @@ class Rushhour:
         return None
 
     def solve_Astar(self, state):
+        # Ensemble hash pour mémoriser les états déjà trouvés
         visited = set()
         visited.add(state)
 
+        # File de priorité initialisée avec l'état initial
         priority_queue = []
         state.h = state.estimee1()
         heapq.heappush(priority_queue, state)
 
-        # TODO
+        # Variable pour compter le nombre d'états visités lors de la résolution
+        nb_visited = 0
+
+        # Recherche en largeur sur l'arbre, tant que la liste n'est pas vide
+        while priority_queue:
+            # Extrait l'état ayant la valeur (fonction d'estimation) la plus prioritaire
+            p = heapq.heappop(priority_queue)
+            nb_visited += 1
+
+            # Si l'état est final, on termine l'algorithme
+            if p.success():
+                # Afficher le nombre d'états visités lors de la résolution
+                print("Nombre d'états visités lors de la résolution : %i" % nb_visited)
+                return p
+            # Sinon, on ajoute ses fils non visités à la file
+            else:
+                s = self.possible_moves(p)
+                for child in s:
+                    if child not in visited:
+                        child.h = child.estimee1()
+                        heapq.heappush(priority_queue, child)
+                        visited.add(child)
         return None
 
     def print_solution(self, state):

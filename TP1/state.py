@@ -37,6 +37,10 @@ class State:
         s.prev = self
         s.c = c
         s.d = d
+
+        # La variable nb_moves est incrémentée à chaque fois que l'on crée un nouvel état en utilisant move(c, d)
+        s.nb_moves = self.nb_moves + 1
+
         return s
 
     """ est il final? """
@@ -50,8 +54,8 @@ class State:
     """
 
     def estimee1(self):
-        # TODO
-        return 0
+        # Renvoie la distance entre la voiture rouge et la sortie
+        return 4 - self.pos[0]
 
     def estimee2(self, rh):
         # TODO

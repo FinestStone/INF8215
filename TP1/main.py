@@ -68,8 +68,8 @@ def solve46():
                  [2, 2, 0, 0, 3, 1, 1, 3, 0, 4, 5, 5],
                  ["rouge", "vert clair", "jaune", "orange", "violet clair", "bleu ciel", "rose", "violet", "vert", "noir", "beige", "bleu"])
     s = State([1, 0, 3, 1, 1, 4, 3, 4, 4, 2, 4, 1])
-    s = rh.solve(s)
-    #s = rh.solve_Astar(s)
+    # s = rh.solve(s)
+    s = rh.solve_Astar(s)
     rh.print_solution(s)
 
 
@@ -79,8 +79,8 @@ def solve16():
                   [2, 0, 0, 0, 5, 4, 5, 3],
                   ["rouge", "vert clair", "violet", "orange", "vert", "bleu ciel", "jaune", "bleu"])
     s = State([1, 0, 1, 4, 2, 4, 0, 1])
-    s = rh.solve(s)
-    # s = rh.solve_Astar(s)
+    # s = rh.solve(s)
+    s = rh.solve_Astar(s)
     n = rh.print_solution(s)
 
 
@@ -91,8 +91,8 @@ def solve81():
                   ["rouge", "jaune", "vert clair", "orange", "bleu clair", "rose", "violet clair", "bleu", "violet",
                    "vert", "noir", "beige", "jaune clair"])
     s = State([3, 0, 1, 0, 1, 1, 1, 0, 3, 4, 4, 0, 3])
-    s = rh.solve(s)
-    # s = rh.solve_Astar(s)
+    # s = rh.solve(s)
+    s = rh.solve_Astar(s)
     n = rh.print_solution(s)
 
 
