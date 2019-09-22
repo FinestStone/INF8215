@@ -58,8 +58,22 @@ class State:
         return 4 - self.pos[0]
 
     def estimee2(self, rh):
-        # TODO
-        return 0
+        # Nombre de voitures entre la voiture rouge et la sortie
+        nb_cars = 0
+
+        red_car_front = self.pos[0] + 2
+
+        for i in range(1, rh.nbcars):
+            # Voiture à la verticale et sur une rangée devant la voiture rouge
+            if not rh.horiz[i] and rh.move_on[i] >= red_car_front:
+                front = self.pos[i]
+                rear = front + rh.length[i] - 1
+                # L'espace entre l'avant et l'arrière de la voiture contient la rangée 2
+                if front <= 2 & rear >= 2:
+                    nb_cars += 1
+
+        # Renvoie la distance entre la voiture rouge et la sortie plus le nombre de voitures entre celle-ci et la sortie
+        return self.estimee1() + nb_cars
 
     def __eq__(self, other):
         if not isinstance(other, State):
