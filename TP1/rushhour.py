@@ -116,7 +116,7 @@ class Rushhour:
                 s = self.possible_moves(p)
                 for child in s:
                     if child not in visited:
-                        child.h = child.estimee2(self)
+                        child.h = child.estimee3(self)
                         heapq.heappush(priority_queue, child)
                         visited.add(child)
         return None
