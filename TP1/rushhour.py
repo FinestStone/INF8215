@@ -133,9 +133,8 @@ class Rushhour:
         solution_path.reverse()
 
         # Print all the solution elements in order
-        i = 1
         for solution_element in solution_path:
-            # Color of the car that needs to be moves
+            # Color oNombre d'états visités lors de la résolution : 956f the car that needs to be moves
             color = self.color[solution_element.c]
 
             # Direction of the moving car
@@ -150,7 +149,6 @@ class Rushhour:
                 else:
                     direction = "le haut"
 
-            print("%s. Voiture %s vers %s" % (i, color, direction))
-            i += 1
+            print("%s. Voiture %s vers %s" % (solution_path.index(solution_element) + 1, color, direction))
 
         return 0

@@ -69,7 +69,7 @@ class State:
                 front = self.pos[i]
                 rear = front + rh.length[i] - 1
                 # L'espace entre l'avant et l'arrière de la voiture contient la rangée 2
-                if front <= 2 & rear >= 2:
+                if front <= 2 and rear >= 2:
                     nb_cars += 1
 
         # Renvoie la distance entre la voiture rouge et la sortie plus le nombre de voitures entre celle-ci et la sortie
@@ -87,17 +87,18 @@ class State:
                 front = self.pos[i]
                 rear = front + rh.length[i] - 1
                 # L'espace entre l'avant et l'arrière de la voiture contient la rangée 2
-                if front == 0 & rear == 2:
+                if front == 0 and rear == 2:
                     nb_car_moves += 3
-                elif front == 1 & rear == 3:
+                elif front == 1 and rear == 3:
                     nb_car_moves += 2
-                elif front == 1 & rear == 2:
+                elif front == 1 and rear == 2:
                     nb_car_moves += 1
                 elif front == 2:
                     nb_car_moves += 1
 
-        # Renvoie la distance entre la voiture rouge et la sortie plus le nombre de voitures entre celle-ci et la sortie
-        return self.estimee2(rh) + nb_car_moves
+        # Renvoie la distance entre la voiture rouge et la sortie plus le nombre de déplacements minimal des voitures
+        # entre celle-ci et la sortie
+        return self.estimee1() + nb_car_moves
 
     def __eq__(self, other):
         if not isinstance(other, State):
