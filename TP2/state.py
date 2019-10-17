@@ -23,8 +23,8 @@ class State:
         self.nb_moves = 0
         self.score = 0
 
-        # TODO
-        self.rock = None
+        # Position de la roche
+        self.rock = []
 
     """
     Constructeur d'un état à partir du mouvement (c,d)
@@ -41,8 +41,16 @@ class State:
         return s
 
     def put_rock(self, rock_pos):
-        # TODO
-        return None
+        # Nouvel objet State à retourner
+        new_s = State(self.pos)
+        new_s.prev = self
+        new_s.c = self.c
+        new_s.d = self.d
+
+        # Ajouter une nouvelle roche et enlever l'ancienne
+        new_s.rock = rock_pos
+
+        return new_s
 
     def score_state(self):
         # TODO

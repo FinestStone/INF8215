@@ -19,7 +19,8 @@ class Rushhour:
                 self.free_pos[self.move_on[i], state.pos[i]:state.pos[i] + self.length[i]] = False
             else:
                 self.free_pos[state.pos[i]:state.pos[i] + self.length[i], self.move_on[i]] = False
-        # TODO
+        # Emplacement de la roche
+        self.free_pos[state.rock] = False
 
     def possible_moves(self, state):
         self.init_positions(state)
@@ -41,8 +42,20 @@ class Rushhour:
 
     def possible_rock_moves(self, state):
         self.init_positions(state)
-        new_states = []
-        # TODO
+        new_states = []  # Tous les coups possibles de l'adversaire (avec la roche) à partir de l'état courant
+
+        rock_current_row = rock_current_column = None
+
+        if state.rock:
+            (rock_current_row, rock_current_column) = state.rock
+
+        # Ne peut mettre deux roches consécutives sur la même ligne ou sur la ligne 2
+        for row in set(range(6)) - {2, rock_current_row}:
+            # Ne peut mettre deux roches consécutives sur la même colonne
+            for column in set(range(6)) - {rock_current_column}:
+                if self.free_pos[row, column]:
+                    new_states.append(state.put_rock((row, column)))
+
         return new_states
 
     def print_pretty_grid(self, state):
