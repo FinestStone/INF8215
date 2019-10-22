@@ -37,7 +37,7 @@ class State:
         s.c = c
         s.d = d
         s.nb_moves = self.nb_moves + 1
-        # TODO
+        s.rock = self.rock
         return s
 
     def put_rock(self, rock_pos):
@@ -53,7 +53,8 @@ class State:
         return new_s
 
     def score_state(self):
-        # TODO
+        # Affecte la valeur de l'état à son paramètre score
+        self.score = 4 - self.pos[0]  # Distance entre la voiture rouge et la sortie (heuristique)
         return None
 
     def success(self):

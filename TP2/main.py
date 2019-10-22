@@ -1,4 +1,4 @@
-from rushhour import *
+from minimaxsearch import *
 
 
 def testRocks():
@@ -41,6 +41,19 @@ def testPossibleRockMoves():
     print(len(sols))
 
 
+def test_print_move():
+    rh = Rushhour([True], [2], [2], ["rouge"])
+    s = State([0])
+    s = s.put_rock((3, 1))  # Roche dans la case 3-1
+    s = s.move(0, 1)  # Voiture rouge vers la droite
+
+    algo = MiniMaxSearch(rh, s, 1)
+    algo.print_move(True, s)
+    algo.print_move(False, s)
+
+
 if __name__ == '__main__':
-    testRocks()
-    testPossibleRockMoves()
+    # testRocks()
+    # testPossibleRockMoves()
+
+    test_print_move()
