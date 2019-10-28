@@ -52,8 +52,22 @@ def test_print_move():
     algo.print_move(False, s)
 
 
+def test_solve_9():
+    # Solution optimale: 9 moves
+    rh = Rushhour([True, False, False, False, True],
+                  [2, 3, 2, 3, 3],
+                  [2, 4, 5, 1, 5],
+                  ["rouge", "vert", "bleu", "orange", "jaune"])
+    s = State([1, 0, 1, 3, 2])
+    algo = MiniMaxSearch(rh, s, 1)
+    algo.rushhour.init_positions(s)
+    print(algo.rushhour.free_pos)
+    algo.solve(s, True)
+
+
 if __name__ == '__main__':
     # testRocks()
     # testPossibleRockMoves()
+    # test_print_move()
 
-    test_print_move()
+    test_solve_9()

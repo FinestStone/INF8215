@@ -53,9 +53,11 @@ class State:
         return new_s
 
     def score_state(self):
+        gain = 10 * self.pos[0]  # 10 fois la proximité de la voiture rouge à la sortie accordée
+        perte = self.nb_moves  # Chaque mouvement engendre une perte de 1 point
+
         # Affecte la valeur de l'état à son paramètre score
-        self.score = 4 - self.pos[0]  # Distance entre la voiture rouge et la sortie (heuristique)
-        return None
+        self.score = gain - perte
 
     def success(self):
         return self.pos[0] == 4

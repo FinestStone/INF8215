@@ -8,10 +8,23 @@ class MiniMaxSearch:
         self.search_depth = search_depth
 
     def minimax_1(self, current_depth, current_state):
-        best_move = None
+        # Contient la logique de l'algorithme minimax pour un seul joueur
+        if current_depth == 0 or current_state.success():
+            current_state.score_state()
+            return current_state.score, (None, None)
+
+        max_value = float('-inf')
+        best_move = (None, None)
+
+        for s in self.rushhour.possible_moves(current_state):
+            eval_child, move_child = self.minimax_1(current_depth-1, s)
+
+            if eval_child > max_value:
+                max_value = eval_child
+                best_move = (s.c, s.d)
 
         # Retourne le meilleur coup à prendre à partir de l'état courant
-        return best_move
+        return max_value, best_move
 
     def minimax_2(self, current_depth, current_state, is_max):
         best_move = None
@@ -32,6 +45,9 @@ class MiniMaxSearch:
         return best_move
 
     def decide_best_move_1(self):
+        # Trouve et exécute le meilleur coup pour une partie à un joueur
+        # best_move = self.minimax_1(self.state.nb_moves, self.state)
+        # self.state.move(best_move[0], best_move[1])
         # TODO
         pass
 
@@ -48,8 +64,9 @@ class MiniMaxSearch:
         pass
 
     def solve(self, state, is_singleplayer):
-        # TODO
-        pass
+        # Résout un problème de Rush Hour avec le nombre minimal de coups
+        if is_singleplayer:
+            print(self.minimax_1(self.search_depth, state))
 
     def print_move(self, is_max, state):
         # État sous le contrôle de l’agent
