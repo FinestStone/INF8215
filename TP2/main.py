@@ -62,7 +62,7 @@ def test_solve_9():
     algo = MiniMaxSearch(rh, s, 1)
     algo.rushhour.init_positions(s)
     print(algo.rushhour.free_pos)
-    algo.solve(s, True)
+    algo.solve(True)
 
 
 if __name__ == '__main__':

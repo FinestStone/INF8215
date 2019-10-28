@@ -66,22 +66,32 @@ class State:
                 # L'espace entre l'avant et l'arrière de la voiture contient la rangée 2
                 if front == 0 and rear == 2:
                     nb_car_moves += 3
-                    nb_car_moves += len(np.where(rh.free_pos[rear + 1:, rh.move_on[i]] is False))
+                    rear_array = rh.free_pos[rear + 1:, rh.move_on[i]]
+                    nb_car_moves += len(rear_array) - np.sum(rear_array)
                 elif front == 1 and rear == 3:
                     nb_car_moves += 2
-                    nb_car_moves += len(np.where(rh.free_pos[rear + 1:, rh.move_on[i]] is False))
+                    rear_array = rh.free_pos[rear + 1:, rh.move_on[i]]
+                    nb_car_moves += len(rear_array) - np.sum(rear_array)
                 elif front == 1 and rear == 2:
                     nb_car_moves += 1
+                    front_array = rh.free_pos[:front, rh.move_on[i]]
+                    nb_car_moves += len(front_array) - np.sum(front_array)
                 elif front == 2:
                     nb_car_moves += 1
                     if rh.length[i] == 3:
-                        nb_car_moves += len(np.where(rh.free_pos[4:, rh.move_on[i]] is False))
+                        rear_array = rh.free_pos[rear + 1:, rh.move_on[i]]
+                        nb_car_moves += len(rear_array) - np.sum(rear_array)
+                    elif rh.length[i] == 2:
+                        if rh.free_pos[4, rh.move_on[i]]:
+                            nb_car_moves += 1
 
         # Renvoie la distance entre la voiture rouge et la sortie plus le nombre de déplacements minimal des voitures
         # entre celle-ci et la sortie
         return 4 - self.pos[0] + nb_car_moves
 
     def score_state(self, rh):
+        temp_rh = rh
+        temp_rh.init_positions(self)
         gain = 10 * self.pos[0]  # 10 fois la proximité de la voiture rouge à la sortie accordée
         perte = self.estimee3(rh)  # Chaque mouvement engendre une perte de 1 point
 

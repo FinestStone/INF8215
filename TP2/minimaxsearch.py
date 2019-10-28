@@ -61,12 +61,12 @@ class MiniMaxSearch:
         # TODO
         pass
 
-    def solve(self, state, is_singleplayer):
+    def solve(self, is_singleplayer):
         # Résout un problème de Rush Hour avec le nombre minimal de coups
         if is_singleplayer:
-            while not state.success():
+            while not self.state.success():
                 self.decide_best_move_1()
-                self.solve(self.state, True)
+                self.solve(True)
 
     def print_move(self, is_max, state):
         # État sous le contrôle de l’agent
