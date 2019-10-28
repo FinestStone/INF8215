@@ -52,9 +52,38 @@ class State:
 
         return new_s
 
-    def score_state(self):
+    def estimee3(self, rh):
+        # Nombre de déplacements minimum pour les voitures entre la voiture rouge et la sortie
+        nb_car_moves = 0
+
+        red_car_front = self.pos[0] + 2
+
+        for i in range(1, rh.nbcars):
+            # Voiture à la verticale et sur une rangée devant la voiture rouge
+            if not rh.horiz[i] and rh.move_on[i] >= red_car_front:
+                front = self.pos[i]
+                rear = front + rh.length[i] - 1
+                # L'espace entre l'avant et l'arrière de la voiture contient la rangée 2
+                if front == 0 and rear == 2:
+                    nb_car_moves += 3
+                    nb_car_moves += len(np.where(rh.free_pos[rear + 1:, rh.move_on[i]] is False))
+                elif front == 1 and rear == 3:
+                    nb_car_moves += 2
+                    nb_car_moves += len(np.where(rh.free_pos[rear + 1:, rh.move_on[i]] is False))
+                elif front == 1 and rear == 2:
+                    nb_car_moves += 1
+                elif front == 2:
+                    nb_car_moves += 1
+                    if rh.length[i] == 3:
+                        nb_car_moves += len(np.where(rh.free_pos[4:, rh.move_on[i]] is False))
+
+        # Renvoie la distance entre la voiture rouge et la sortie plus le nombre de déplacements minimal des voitures
+        # entre celle-ci et la sortie
+        return 4 - self.pos[0] + nb_car_moves
+
+    def score_state(self, rh):
         gain = 10 * self.pos[0]  # 10 fois la proximité de la voiture rouge à la sortie accordée
-        perte = self.nb_moves  # Chaque mouvement engendre une perte de 1 point
+        perte = self.estimee3(rh)  # Chaque mouvement engendre une perte de 1 point
 
         # Affecte la valeur de l'état à son paramètre score
         self.score = gain - perte
