@@ -52,48 +52,31 @@ class State:
 
         return new_s
 
-    def estimee3(self, rh):
-        # Nombre de déplacements minimum pour les voitures entre la voiture rouge et la sortie
-        nb_car_moves = 0
+    # Retourne une liste des véhicules qui touche l'endroit où pourrait se déplacer la voiture spécifiée
+    def blocking_cars(self, rh, blocked_car_id, blocked_car_dir):
+        # Vecteur des véhicules perpendiculaires
+        v_id = [v_id for v_id in range(1, rh.nbcars) if rh.horiz[v_id] != rh.horiz[blocked_car_id]]
 
-        red_car_front = self.pos[0] + 2
+        blocked_car_rear = self.pos[blocked_car_id]
+        blocked_car_front = self.pos[blocked_car_id] + rh.length[blocked_car_id] - 1
 
-        for i in range(1, rh.nbcars):
-            # Voiture à la verticale et sur une rangée devant la voiture rouge
-            if not rh.horiz[i] and rh.move_on[i] >= red_car_front:
-                front = self.pos[i]
-                rear = front + rh.length[i] - 1
-                # L'espace entre l'avant et l'arrière de la voiture contient la rangée 2
-                if front == 0 and rear == 2:
-                    nb_car_moves += 3
-                    rear_array = rh.free_pos[rear + 1:, rh.move_on[i]]
-                    nb_car_moves += len(rear_array) - np.sum(rear_array)
-                elif front == 1 and rear == 3:
-                    nb_car_moves += 2
-                    rear_array = rh.free_pos[rear + 1:, rh.move_on[i]]
-                    nb_car_moves += len(rear_array) - np.sum(rear_array)
-                elif front == 1 and rear == 2:
-                    nb_car_moves += 1
-                    front_array = rh.free_pos[:front, rh.move_on[i]]
-                    nb_car_moves += len(front_array) - np.sum(front_array)
-                elif front == 2:
-                    nb_car_moves += 1
-                    if rh.length[i] == 3:
-                        rear_array = rh.free_pos[rear + 1:, rh.move_on[i]]
-                        nb_car_moves += len(rear_array) - np.sum(rear_array)
-                    elif rh.length[i] == 2:
-                        if rh.free_pos[4, rh.move_on[i]]:
-                            nb_car_moves += 1
+        if blocked_car_dir == 1:
+            v_in_way = [i for i in v_id if (rh.move_on[i] > blocked_car_front) and
+                        (self.pos[i] <= rh.move_on[blocked_car_id]) and
+                        (self.pos[i] + rh.length[i] - 1 >= rh.move_on[blocked_car_id])]
+        else:
+            v_in_way = [i for i in v_id if (rh.move_on[i] < blocked_car_rear) and
+                        (self.pos[i] <= rh.move_on[blocked_car_id]) and
+                        (self.pos[i] + rh.length[i] - 1 >= rh.move_on[blocked_car_id])]
 
-        # Renvoie la distance entre la voiture rouge et la sortie plus le nombre de déplacements minimal des voitures
-        # entre celle-ci et la sortie
-        return 4 - self.pos[0] + nb_car_moves
+        return v_in_way
 
     def score_state(self, rh):
         temp_rh = rh
         temp_rh.init_positions(self)
         gain = 10 * self.pos[0]  # 10 fois la proximité de la voiture rouge à la sortie accordée
-        perte = self.estimee3(rh)  # Chaque mouvement engendre une perte de 1 point
+        nb_car_moves, car_id = self.blocking_cars(rh, 8, -1)
+        perte = 1 * nb_car_moves  # Chaque mouvement engendre une perte de 1 point
 
         # Affecte la valeur de l'état à son paramètre score
         self.score = gain - perte

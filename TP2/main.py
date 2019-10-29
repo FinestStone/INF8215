@@ -65,9 +65,36 @@ def test_solve_9():
     algo.solve(True)
 
 
+def test_solve_16():
+    # solution optimale: 16 moves
+    rh = Rushhour([True, True, False, False, True, True, False, False],
+                  [2, 2, 3, 2, 3, 2, 3, 3],
+                  [2, 0, 0, 0, 5, 4, 5, 3],
+                  ["rouge", "vert", "mauve", "orange", "emeraude", "lime", "jaune", "bleu"])
+    s = State([1, 0, 1, 4, 2, 4, 0, 1])
+    algo = MiniMaxSearch(rh, s, 1)
+    algo.rushhour.init_positions(s)
+    print(algo.rushhour.free_pos)
+    algo.solve(True)
+
+
+def test_solve_14():
+    # solution optimale: 14 moves
+    rh = Rushhour([True, False, True, False, False, False, True, True, False, True, True],
+                  [2, 2, 3, 2, 2, 3, 3, 2, 2, 2, 2],
+                  [2, 0, 0, 3, 4, 5, 3, 5, 2, 5, 4],
+                  ["rouge", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"])
+    s = State([0, 0, 3, 1, 2, 1, 0, 0, 4, 3, 4])
+    algo = MiniMaxSearch(rh, s, 1)
+    algo.rushhour.init_positions(s)
+    print(algo.rushhour.free_pos)
+    algo.solve(s)
+
+
 if __name__ == '__main__':
     # testRocks()
     # testPossibleRockMoves()
     # test_print_move()
+    # test_solve_9()
 
-    test_solve_9()
+    test_solve_14()

@@ -66,6 +66,7 @@ class MiniMaxSearch:
         if is_singleplayer:
             while not self.state.success():
                 self.decide_best_move_1()
+                self.print_move(True, self.state)
                 self.solve(True)
 
     def print_move(self, is_max, state):
@@ -84,7 +85,7 @@ class MiniMaxSearch:
                     direction = "le haut"
 
             # Imprime le coup fait
-            print("Voiture %s vers %s" % (color, direction))
+            print("%i. Voiture %s vers %s" % (self.state.nb_moves, color, direction))
 
         # État sous le contrôle de l’adversaire
         else:
