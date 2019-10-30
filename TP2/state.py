@@ -71,12 +71,38 @@ class State:
 
         return v_in_way
 
+    def min_number_moves(self, rh):
+        nb_moves = 0
+
+        cars_infront_red = self.blocking_cars(rh, 0, 1)
+        for i in cars_infront_red:
+            if rh.length[i] == 3:
+                nb_moves += 3 - self.pos[i]
+            else:
+                nb_moves += 1
+
+        return 4 - self.pos[0] + nb_moves
+
+    def obstruction_count(self, rh, depth):
+        obstructed = self.blocking_cars(rh, 0, 1)
+        nb_obstructions = len(obstructed)
+        not_yet_visited = []
+
+        for i in range(1, depth):
+            for v in obstructed:
+                not_yet_visited += self.blocking_cars(rh, v, -1)
+                not_yet_visited += self.blocking_cars(rh, v, 1)
+            nb_obstructions += (depth - i) * len(not_yet_visited)
+            obstructed = set(not_yet_visited)
+            not_yet_visited = []
+
+        return nb_obstructions
+
     def score_state(self, rh):
-        temp_rh = rh
-        temp_rh.init_positions(self)
-        gain = 10 * self.pos[0]  # 10 fois la proximité de la voiture rouge à la sortie accordée
-        nb_car_moves, car_id = self.blocking_cars(rh, 8, -1)
-        perte = 1 * nb_car_moves  # Chaque mouvement engendre une perte de 1 point
+        # 10 fois la proximité de la voiture rouge à la sortie accordée
+        gain = 10 * self.pos[0]
+        # Chaque mouvement et obstruction engendre une perte de 1 point
+        perte = self.min_number_moves(rh) + self.obstruction_count(rh, 4)
 
         # Affecte la valeur de l'état à son paramètre score
         self.score = gain - perte
