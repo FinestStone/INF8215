@@ -54,13 +54,16 @@ class State:
 
     # Retourne une liste des véhicules qui touche l'endroit où pourrait se déplacer la voiture spécifiée
     def blocking_cars(self, rh, blocked_car_id, blocked_car_dir):
-        # Vecteur des véhicules perpendiculaires
+        # Vecteur des véhicules perpendiculaires à la voiture analysée
         v_id = [v_id for v_id in range(1, rh.nbcars) if rh.horiz[v_id] != rh.horiz[blocked_car_id]]
 
+        # Avant et arrière de la voiture analysée
         blocked_car_rear = self.pos[blocked_car_id]
         blocked_car_front = self.pos[blocked_car_id] + rh.length[blocked_car_id] - 1
 
+        # Calcul dépendant de la direction prise par la voiture
         if blocked_car_dir == 1:
+            # Vecteur des voitures touchant la ligne de déplacement aurant en face qu'en arrière
             v_in_way = [i for i in v_id if (rh.move_on[i] > blocked_car_front) and
                         (self.pos[i] <= rh.move_on[blocked_car_id]) and
                         (self.pos[i] + rh.length[i] - 1 >= rh.move_on[blocked_car_id])]
@@ -69,12 +72,17 @@ class State:
                         (self.pos[i] <= rh.move_on[blocked_car_id]) and
                         (self.pos[i] + rh.length[i] - 1 >= rh.move_on[blocked_car_id])]
 
+        # Retourne le vecteur des voitures obstruant le véhicule analysé
         return v_in_way
 
+    # Heuristique #3 du premier TP
     def min_number_moves(self, rh):
         nb_moves = 0
 
+        # Liste des voitures face au véhicule rouge
         cars_infront_red = self.blocking_cars(rh, 0, 1)
+
+        # Calcule le nombre strictement minimum requis pour libérer la ligne 2
         for i in cars_infront_red:
             if rh.length[i] == 3:
                 nb_moves += 3 - self.pos[i]
@@ -83,26 +91,37 @@ class State:
 
         return 4 - self.pos[0] + nb_moves
 
+    # Compte le nombre d'obstruction et pondère le poids selon la profondeur de l'obstruction
     def obstruction_count(self, rh, depth):
+        # Trouve les voitures qui obstrue la voiture rouge
         obstructed = self.blocking_cars(rh, 0, 1)
+        # Nombre d'obstructions
         nb_obstructions = len(obstructed)
         not_yet_visited = []
 
+        # Recherche des obstructions des voitures obstruée qui obstruent... selon une profondeur donnée
         for i in range(1, depth):
             for v in obstructed:
+                # Calcule le nombre de véhicules qui obstruent l'avant et l'arrière de la voiture
                 not_yet_visited += self.blocking_cars(rh, v, -1)
                 not_yet_visited += self.blocking_cars(rh, v, 1)
+            # Les obstruction plus profondes sont moins importantes
             nb_obstructions += (depth - i) * len(not_yet_visited)
+            # On retire les redondances pour l'explorations subséquente
             obstructed = set(not_yet_visited)
             not_yet_visited = []
 
+        #  Retourne le nombre d'obstructions
         return nb_obstructions
 
     def score_state(self, rh):
         # 10 fois la proximité de la voiture rouge à la sortie accordée
         gain = 10 * self.pos[0]
-        # Chaque mouvement et obstruction engendre une perte de 1 point
+        # Chaque mouvement et obstruction engendre des pertes
         perte = self.min_number_moves(rh) + self.obstruction_count(rh, 4)
+        # Pour éviter de retourner dans un état précédent
+        if self.c == self.prev.c and self.d == -self.prev.d:
+            perte += 50
 
         # Affecte la valeur de l'état à son paramètre score
         self.score = gain - perte

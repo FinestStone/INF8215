@@ -96,5 +96,5 @@ if __name__ == '__main__':
     # testPossibleRockMoves()
     # test_print_move()
     test_solve_9()
-    # test_solve_16()
+    test_solve_16()
     test_solve_14()
