@@ -96,7 +96,7 @@ class State:
         # Trouve les voitures qui obstrue la voiture rouge
         obstructed = self.blocking_cars(rh, 0, 1)
         # Nombre d'obstructions
-        nb_obstructions = len(obstructed)
+        nb_obstructions = 5*len(obstructed)
         not_yet_visited = []
 
         # Recherche des obstructions des voitures obstruée qui obstruent... selon une profondeur donnée
@@ -119,9 +119,11 @@ class State:
         gain = 10 * self.pos[0]
         # Chaque mouvement et obstruction engendre des pertes
         perte = self.min_number_moves(rh) + self.obstruction_count(rh, 4)
+        # Pour encourager la résolution en un nombre minimal de coup
+        perte += self.nb_moves
         # Pour éviter de retourner dans un état précédent
         if self.c == self.prev.c and self.d == -self.prev.d:
-            perte += 50
+            perte += 100
 
         # Affecte la valeur de l'état à son paramètre score
         self.score = gain - perte

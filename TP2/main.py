@@ -113,7 +113,7 @@ def test_solve_16_2():
     algo = MiniMaxSearch(rh, s, 3)
     algo.rushhour.init_positions(s)
     print(algo.rushhour.free_pos)
-    algo.solve(False)
+    algo.solve(True)
 
 
 def test_solve_14_2():
@@ -125,7 +125,7 @@ def test_solve_14_2():
     algo = MiniMaxSearch(rh, s, 3)
     algo.rushhour.init_positions(s)
     print(algo.rushhour.free_pos)
-    algo.solve(False)
+    algo.solve(True)
 
 
 if __name__ == '__main__':
@@ -135,6 +135,6 @@ if __name__ == '__main__':
     # test_solve_9()
     # test_solve_16()
     # test_solve_14()
-    test_solve_9_2()
-    test_solve_16_2()
+    # test_solve_9_2()
+    # test_solve_16_2()
     test_solve_14_2()
