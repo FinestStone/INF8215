@@ -121,18 +121,23 @@ class State:
 
         # Recherche des obstructions des voitures obstruée qui obstruent... pondéré selon la profondeur de l'obstruction
         for i in range(1, depth):
+            # On parcourt toutes les voitures obstruant le passage
             for v in obstructed:
-                # Cars of length 3 in last row must come down
-                if i == 1 and rh.length[v] == 3 and (rh.move_on[v] == 4 or rh.move_on[v] == 5):
-                    nb_obstructions += 5 * len(self.blocking_cars(rh, v, 1))
-                    if self.rock:
-                        # Trouve si une voiture est bloquée par la roche
-                        nb_obstructions += 5 * self.blocking_rock(rh, v, 1)
-                # Calcule le nombre de véhicules qui obstruent l'avant et l'arrière de la voiture
+                # Voitures de longueurs 3 bloquant les dernières colonnes
+                if i == 1 and rh.length[v] == 3:
+                    if rh.move_on[v] == 4:
+                        nb_obstructions += len(self.blocking_cars(rh, v, 1))
+                    # Les voitures de longueur 3 dans la dernière colonne doivent nécessairement descendre
+                    if rh.move_on[v] == 5:
+                        # Les obstructions de niveau deux ont un impact important et sont pondérées en conséquence
+                        nb_obstructions += 2 * len(self.blocking_cars(rh, v, 1))
+                        nb_obstructions -= self.pos[v]  # On récompense le joueur max quand on libère la dernière col
+                # On énumère les voitures qui bloquent la voiture bloquée
                 not_yet_visited += self.blocking_cars(rh, v, -1)
                 not_yet_visited += self.blocking_cars(rh, v, 1)
+                # Tient compte des roches
                 if self.rock:
-                    # Trouve si une voiture est bloquée par la roche
+                    # Trouve le nombre d'obstruction directe d'une voiture par la roche
                     nb_obstructions += (depth - i) * self.blocking_rock(rh, v, -1)
                     nb_obstructions += (depth - i) * self.blocking_rock(rh, v, 1)
 

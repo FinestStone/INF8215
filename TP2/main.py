@@ -139,4 +139,4 @@ if __name__ == '__main__':
     test_solve_14()
     test_solve_9_2()
     test_solve_16_2()
-    # test_solve_14_2()
+    test_solve_14_2()
