@@ -77,6 +77,22 @@ class State:
         # Retourne le vecteur des voitures obstruant le véhicule analysé
         return v_in_way
 
+    # Retourne un si le véhicule est bloqué par la roche
+    def blocking_rock(self, rh, car_id, car_dir):
+        obstruction = 0
+
+        # Avant et arrière de la voiture analysée
+        car_rear = self.pos[car_id]
+        car_front = self.pos[car_id] + rh.length[car_id] - 1
+
+        # Dépendant de la direction prise par la voiture
+        if rh.move_on[car_id] == self.rock[not rh.horiz[car_id]]:
+            if car_dir == 1 and self.rock[rh.horiz[car_id]] == car_front + 1:
+                obstruction += 1
+            elif car_dir == -1 and self.rock[rh.horiz[car_id]] == car_rear - 1:
+                obstruction += 1
+        return obstruction
+
     # Heuristique #3 du premier TP
     def min_number_moves(self, rh):
         nb_moves = 0
@@ -95,21 +111,31 @@ class State:
 
     # Compte le nombre d'obstruction et pondère le poids selon la profondeur de l'obstruction
     def obstruction_count(self, rh, depth):
+        nb_obstructions = 0
+
         # Trouve les voitures qui obstrue la voiture rouge
         obstructed = self.blocking_cars(rh, 0, 1)
         # Nombre d'obstructions
-        nb_obstructions = 5*len(obstructed)
+        nb_obstructions += 5*len(obstructed)
         not_yet_visited = []
 
         # Recherche des obstructions des voitures obstruée qui obstruent... pondéré selon la profondeur de l'obstruction
         for i in range(1, depth):
             for v in obstructed:
                 # Cars of length 3 in last row must come down
-                if i == 1 and rh.length[v] == 3 and rh.move_on[v] == 5:
-                    not_yet_visited += 5 * self.blocking_cars(rh, v, 1)
+                if i == 1 and rh.length[v] == 3 and (rh.move_on[v] == 4 or rh.move_on[v] == 5):
+                    nb_obstructions += 5 * len(self.blocking_cars(rh, v, 1))
+                    if self.rock:
+                        # Trouve si une voiture est bloquée par la roche
+                        nb_obstructions += 5 * self.blocking_rock(rh, v, 1)
                 # Calcule le nombre de véhicules qui obstruent l'avant et l'arrière de la voiture
                 not_yet_visited += self.blocking_cars(rh, v, -1)
                 not_yet_visited += self.blocking_cars(rh, v, 1)
+                if self.rock:
+                    # Trouve si une voiture est bloquée par la roche
+                    nb_obstructions += (depth - i) * self.blocking_rock(rh, v, -1)
+                    nb_obstructions += (depth - i) * self.blocking_rock(rh, v, 1)
+
             # Les obstruction plus profondes sont moins importantes
             nb_obstructions += (depth - i) * len(not_yet_visited)
             # On retire les redondances pour l'explorations subséquente
@@ -129,9 +155,6 @@ class State:
         # Pour éviter de retourner dans un état précédent
         if self.c == self.prev.c and self.d == -self.prev.d:
             perte += 100
-
-
-
         # Affecte la valeur de l'état à son paramètre score
         self.score = gain - perte
 
