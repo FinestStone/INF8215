@@ -46,6 +46,8 @@ class State:
         new_s.prev = self
         new_s.c = self.c
         new_s.d = self.d
+        new_s.nb_moves = self.nb_moves + 1
+        new_s.score = self.score
 
         # Ajouter une nouvelle roche et enlever l'ancienne
         new_s.rock = rock_pos
@@ -102,6 +104,7 @@ class State:
         # Recherche des obstructions des voitures obstruée qui obstruent... pondéré selon la profondeur de l'obstruction
         for i in range(1, depth):
             for v in obstructed:
+                # Cars of length 3 in last row must come down
                 if i == 1 and rh.length[v] == 3 and rh.move_on[v] == 5:
                     not_yet_visited += 5 * self.blocking_cars(rh, v, 1)
                 # Calcule le nombre de véhicules qui obstruent l'avant et l'arrière de la voiture
@@ -126,6 +129,8 @@ class State:
         # Pour éviter de retourner dans un état précédent
         if self.c == self.prev.c and self.d == -self.prev.d:
             perte += 100
+
+
 
         # Affecte la valeur de l'état à son paramètre score
         self.score = gain - perte
