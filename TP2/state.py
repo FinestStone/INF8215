@@ -99,9 +99,11 @@ class State:
         nb_obstructions = 5*len(obstructed)
         not_yet_visited = []
 
-        # Recherche des obstructions des voitures obstruée qui obstruent... selon une profondeur donnée
+        # Recherche des obstructions des voitures obstruée qui obstruent... pondéré selon la profondeur de l'obstruction
         for i in range(1, depth):
             for v in obstructed:
+                if i == 1 and rh.length[v] == 3 and rh.move_on[v] == 5:
+                    not_yet_visited += 5 * self.blocking_cars(rh, v, 1)
                 # Calcule le nombre de véhicules qui obstruent l'avant et l'arrière de la voiture
                 not_yet_visited += self.blocking_cars(rh, v, -1)
                 not_yet_visited += self.blocking_cars(rh, v, 1)
