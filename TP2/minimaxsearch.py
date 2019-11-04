@@ -63,10 +63,38 @@ class MiniMaxSearch:
             return min_value, best_move
 
     def minimax_pruning(self, current_depth, current_state, is_max, alpha, beta):
-        best_move = None
+        best_move = (None, None)
 
-        # TODO
-        return best_move
+        # Contient la logique de l'algorithme minimax pour deux joueurs
+        if current_depth == 0 or current_state.success():
+            current_state.score_state(self.rushhour)
+            return current_state.score, (None, None)
+
+        if is_max:
+            max_value = float('-inf')
+            for s in self.rushhour.possible_moves(current_state):
+                eval_child, move_child = self.minimax_pruning(current_depth - 1, s, False, alpha, beta)
+                if eval_child > max_value:
+                    max_value = eval_child
+                    best_move = (s.c, s.d)
+                alpha = max(alpha, eval_child)
+                if beta <= alpha:
+                    break
+            # Retourne le meilleur coup à prendre à partir de l'état courant
+            return max_value, best_move
+
+        else:
+            min_value = float('inf')
+            for s in self.rushhour.possible_rock_moves(current_state):
+                eval_child, move_child = self.minimax_pruning(current_depth - 1, s, True, alpha, beta)
+                if eval_child < min_value:
+                    min_value = eval_child
+                    best_move = (s.rock[0], s.rock[1])
+                beta = min(beta, eval_child)
+                if beta <= alpha:
+                    break
+            # Retourne le meilleur coup à prendre à partir de l'état courant
+            return min_value, best_move
 
     def expectimax(self, current_depth, current_state, is_max):
         best_move = None
@@ -88,8 +116,11 @@ class MiniMaxSearch:
             self.state = self.state.put_rock((best_move[0], best_move[1]))
 
     def decide_best_move_pruning(self, is_max):
-        # TODO
-        pass
+        _, best_move = self.minimax_pruning(self.search_depth, self.state, is_max, float('-inf'), float('inf'))
+        if is_max:
+            self.state = self.state.move(best_move[0], best_move[1])
+        else:
+            self.state = self.state.put_rock((best_move[0], best_move[1]))
 
     def decide_best_move_expectimax(self, is_max):
         # TODO
@@ -106,7 +137,8 @@ class MiniMaxSearch:
         else:
             turn = not self.state.nb_moves % 2  # Tours pairs: joueur max
             while not self.state.success():
-                self.decide_best_move_2(turn)
+                # self.decide_best_move_2(turn)
+                self.decide_best_move_pruning(turn)
                 self.print_move(turn, self.state)
                 self.solve(False)
 
