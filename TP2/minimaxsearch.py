@@ -151,22 +151,37 @@ class MiniMaxSearch:
         else:
             self.state = self.state.put_rock((best_move[0], best_move[1]))
 
-    def solve(self, is_singleplayer):
+    def solve(self, is_singleplayer, second_player):
         # Résout un problème de Rush Hour avec le nombre minimal de coups
         if is_singleplayer:
             while not self.state.success():
                 self.decide_best_move_1()
                 self.print_move(True, self.state)
-                self.solve(True)
+                self.solve(True, False)
 
         else:
             turn = not self.state.nb_moves % 2  # Tours pairs: joueur max
             while not self.state.success():
-                # self.decide_best_move_2(turn)
-                # self.decide_best_move_pruning(turn)
-                self.decide_best_move_expectimax(turn)
-                self.print_move(turn, self.state)
-                self.solve(False)
+                if second_player == 'pessimistic':
+                    self.decide_best_move_2(turn)
+                    self.print_move(turn, self.state)
+                    self.solve(False, 'pessimistic')
+                elif second_player == 'pruning':
+                    self.decide_best_move_pruning(turn)
+                    self.print_move(turn, self.state)
+                    self.solve(False, 'pruning')
+                elif second_player == 'expectimax_aleatoire':
+                    self.decide_best_move_expectimax(turn, second_player)
+                    self.print_move(turn, self.state)
+                    self.solve(False, 'expectimax_aleatoire')
+                elif second_player == 'expectimax_optimistic':
+                    self.decide_best_move_expectimax(turn, second_player)
+                    self.print_move(turn, self.state)
+                    self.solve(False, 'expectimax_optimistic')
+                elif second_player == 'expectimax_pessimistic':
+                    self.decide_best_move_expectimax(turn, second_player)
+                    self.print_move(turn, self.state)
+                    self.solve(False, 'expectimax_pessimistic')
 
     def print_move(self, is_max, state):
         # État sous le contrôle de l’agent
