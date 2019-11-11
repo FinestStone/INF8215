@@ -101,7 +101,7 @@ class MiniMaxSearch:
         elif vision == "expectimax_pessimistic":
             # Softmax function
             e_x = np.exp(children[i] - np.max(children))
-            return e_x / sum(np.exp(children))
+            return e_x / np.sum(np.exp(children))
         elif vision == "expectimax_optimistic":
             # Softmax inverse function
             e_x = np.exp(-1/(children[i] - np.max(children)))
