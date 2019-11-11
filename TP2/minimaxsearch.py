@@ -99,9 +99,19 @@ class MiniMaxSearch:
         if vision == "expectimax_aleatoire":
             return random.random() * 1/len(children)
         elif vision == "expectimax_pessimistic":
-            pass
+            # Softmax function
+            e_x = np.exp(children[i] - np.max(children))
+            return e_x / sum(np.exp(children))
         elif vision == "expectimax_optimistic":
-            pass
+            # Softmax inverse function
+            e_x = np.exp(-1/(children[i] - np.max(children)))
+            sum = 0
+            for c in np.arange(len(children)):
+                sum += np.exp(-1/children[c])
+            if sum != 0:
+                return e_x / sum
+            else:
+                return 0
 
     def expectimax(self, current_depth, current_state, is_max, vision):
         best_move = (None, None)
