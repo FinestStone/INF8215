@@ -20,6 +20,8 @@ def testOneHot():
     print('\nTroisième test')
     print(softmax._one_hot(y3))
 
+    softmax.fit(np.zeros((3, 4)))
+
 
 if __name__ == '__main__':
     testOneHot()

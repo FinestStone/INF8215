@@ -13,6 +13,7 @@ class SoftmaxClassifier(BaseEstimator, ClassifierMixin):
         self.threshold = threshold
         self.early_stopping = early_stopping
         self.nb_classes = 0
+        self.theta_ = None
 
     """
         In:
@@ -35,17 +36,20 @@ class SoftmaxClassifier(BaseEstimator, ClassifierMixin):
     """
 
     def fit(self, X, y=None):
-
         prev_loss = np.inf
         self.losses_ = []
 
-        # self.nb_feature =
-        # self.nb_classes =
+        m, n = X.shape
+        k = y.max()  # TODO: Comment instancier le nombre de classes?
 
-        # X_bias =
-        # self.theta_  =
+        self.nb_feature = n
+        self.nb_classes = k
 
-        for epoch in range( self.n_epochs):
+        bias_column = np.ones((m, 1))  # colonne est remplie de 1
+        X_bias = np.hstack((bias_column, X))
+        self.theta_ = np.random.rand(n, k)
+
+        for epoch in range(self.n_epochs):
 
             # logits =
             # probabilities =
@@ -63,7 +67,7 @@ class SoftmaxClassifier(BaseEstimator, ClassifierMixin):
             getattr(self, "theta_")
         except AttributeError:
             raise RuntimeError("You must train classifer before predicting data!")
-        # X_bias =
+        X_bias = np.hstack((np.ones((np.size(X, 0), 1)), X))
         pass
 
     def predict(self, X, y=None):
