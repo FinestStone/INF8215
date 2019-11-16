@@ -4,7 +4,7 @@ import numpy as np
 
 class SoftmaxClassifier(BaseEstimator, ClassifierMixin):
 
-    def __init__(self, lr = 0.1, alpha = 100, n_epochs = 1000, eps = 1.0e-5,threshold = 1.0e-10 , early_stopping = True):
+    def __init__(self, lr=0.1, alpha=100, n_epochs=1000, eps=1.0e-5, threshold=1.0e-10, early_stopping=True):
 
         self.lr = lr
         self.alpha = alpha
@@ -12,6 +12,7 @@ class SoftmaxClassifier(BaseEstimator, ClassifierMixin):
         self.eps = eps
         self.threshold = threshold
         self.early_stopping = early_stopping
+        self.nb_classes = 0
 
     """
         In:
@@ -79,15 +80,19 @@ class SoftmaxClassifier(BaseEstimator, ClassifierMixin):
     def score(self, X, y=None):
         pass
 
-    def _cost_function(self,probabilities, y ):
+    def _cost_function(self, probabilities, y):
         pass
 
-    def _one_hot(self,y):
+    def _one_hot(self, y):
+        y_ohe = np.zeros((len(y), self.nb_classes))
+        i = 0
+        for x_i in y:
+            y_ohe[i, x_i] = 1
+            i += 1
+        return y_ohe
+
+    def _softmax(self, z):
         pass
 
-    def _softmax(self,z):
-        pass
-
-    def _get_gradient(self,X_bias,y, probas):
-
+    def _get_gradient(self, X_bias, y, probas):
         pass
