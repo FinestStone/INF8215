@@ -40,7 +40,8 @@ class SoftmaxClassifier(BaseEstimator, ClassifierMixin):
         self.losses_ = []
 
         m, n = X.shape
-        k = y.max()  # TODO: Comment instancier le nombre de classes?
+        # k = np.max(y)  # TODO: Comment instancier le nombre de classes?
+        k = 6
 
         self.nb_feature = n
         self.nb_classes = k
@@ -96,7 +97,7 @@ class SoftmaxClassifier(BaseEstimator, ClassifierMixin):
         return y_ohe
 
     def _softmax(self, z):
-        pass
+        return np.exp(z) / np.sum(np.exp(z))
 
     def _get_gradient(self, X_bias, y, probas):
         pass
