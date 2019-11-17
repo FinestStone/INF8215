@@ -69,14 +69,19 @@ class SoftmaxClassifier(BaseEstimator, ClassifierMixin):
         except AttributeError:
             raise RuntimeError("You must train classifer before predicting data!")
         X_bias = np.hstack((np.ones((np.size(X, 0), 1)), X))
-        pass
+        z = X*self.theta_  # TODO: Pas certain que ce soit ce qui est demandé
+        # Retourne les probabilités associées à chaque classe pour chacune des instances à prédire
+        return self._softmax(z)
 
     def predict(self, X, y=None):
         try:
             getattr(self, "theta_")
         except AttributeError:
             raise RuntimeError("You must train classifer before predicting data!")
-        pass
+        # Probabilités des différentes classes
+        p_x_k = self.predict_proba(X, y)
+        # Retourne l'indice (classe) avec la plus grande probabilité pour chacunes des intances à prédire.
+        return max(np.arange(len(p_x_k)), key=p_x_k.__getitem__)
 
     def fit_predict(self, X, y=None):
         self.fit(X, y)
